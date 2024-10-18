@@ -1,25 +1,33 @@
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.Random;
+
+
+
+
 public class swimRelay
 	{
 		public static void main(String[] args) 
 			{
 				RelayLane.fillTeam();
-				sort();
 				delay();
+				ArrayList<InitialVsResult> results = simulateRelay();
+				displayResults(results);
 			}
+	
 		
-				public static void sort()
+				public static ArrayList<InitialVsResult> simulateRelay()
 					{
+					ArrayList<InitialVsResult> results = new ArrayList<>();
+					Random random = new Random();
 						System.out.println("We're getting ready to swim the 400 freestyle relay at the 2016 Rio Olympics!! Here are the relays sorted from slowest to fastest:");
-						System.out.println("1: Canada, Time = 3:15.66");
-						System.out.println("2: Sweden, Time = 3:15.54");
-						System.out.println("3: Great Britain, Time = 3:15.23 ");
-						System.out.println("4: South Africa, Time = 3:14.89");
-						System.out.println("5: Australia, Time = 3:14.65");
-						System.out.println("6: Italy, Time = 3:13.45");
-						System.out.println("7: France, Time = 3:12.36");
-						System.out.println("8: United States, Time = 3:12.23");
+						System.out.println("1: Canada, Time = 3:15.66 (195.66 seconds)");
+						System.out.println("2: Sweden, Time = 3:15.54 (195.54 seconds)");
+						System.out.println("3: Great Britain, Time = 3:15.23 (193.23 seconds) ");
+						System.out.println("4: South Africa, Time = 3:14.89 (194.89 seconds)");
+						System.out.println("5: Australia, Time = 3:14.65 (194.65 seconds)");
+						System.out.println("6: Italy, Time = 3:13.45 (193.45 seconds)");
+						System.out.println("7: France, Time = 3:12.36 (192.36 seconds)");
+						System.out.println("8: United States, Time = 3:12.23 (192.23 seconds)");
 						delay(); 
 						
 						System.out.println(" ");
@@ -27,16 +35,11 @@ public class swimRelay
 						System.out.println(" ");
 						System.out.println("With the United States seeded first at a 3:12.23, these are the relays in their lanes:");
 						
-						System.out.println("Lane 1 " + RelayLane.team.get(0).getName());
-						System.out.println("Lane 2 " + RelayLane.team.get(1).getName());
-						System.out.println("Lane 3 " + RelayLane.team.get(2).getName());
-						System.out.println("Lane 4 " + RelayLane.team.get(3).getName());
-						System.out.println("Lane 5 " + RelayLane.team.get(4).getName());
-						System.out.println("Lane 6 " + RelayLane.team.get(5).getName());
-						System.out.println("Lane 7 " + RelayLane.team.get(6).getName());
-						System.out.println("Lane 8 " + RelayLane.team.get(7).getName());
 						
-						// mock the 400 free relay
+				for(Times swimmer : RelayLane.team) 
+					{
+							System.out.println("Lane " + (RelayLane.team.indexOf(swimmer) + 1) + ": " + swimmer.getName());
+					}
 						
 						System.out.println(" ");
 						delay();
@@ -55,18 +58,40 @@ public class swimRelay
 				        System.out.println("|     |     |     |     |     |     |     |     |");
 				        System.out.println("|     |     |     |     |     |     |     |     |");
 				    delay();
+	
+				    for(Times swimmer : RelayLane.team)
+			    	{
+			    		double initialTime = swimmer.getSeconds();
+			    		double finalTime = initialTime - (random.nextDouble()*5);
+			    		InitialVsResult result = new InitialVsResult(swimmer.getName(), initialTime, finalTime);
+			    		results.add(result);
+			    	}
+				   return results;
 					}
-
-					public static void whoWon()
+				
+				public static void displayResults(ArrayList<InitialVsResult> results)
+			    {
+			        System.out.println("Results of the relay:");
+			        for (InitialVsResult result : results) {
+			            double timeDifference = result.getFinalTime() - result.getInitialTime();
+			            System.out.printf("Swimmer: %s, Initial Time: %.2f seconds, Final Time: %.2f seconds, Time Difference: %.2f seconds (Improved: %s)%n",
+			                    result.getCountry(), result.getInitialTime(), result.getFinalTime(), timeDifference, result.improved());
+			        }
+			    }
+			
+				public static void announceWinner(ArrayList<InitialVsResult> results)
+				{
+					InitialVsResult winner = results.get(0);
+					for(InitialVsResult result: results)
 					{
-						int minutes = random.nextInt(3) +2;
-						int seconds = random.nextInt(15) +12;
-						int milliseconds = Math.random()* 10) + 50;
-//						double randomResult0 = (double) (Math.random() * 10) + 50; 
-//						RelayLane.team.get(0).setTimes(randomResult0);
+						if(result.getFinalTime() < winner.getFinalTime()) {
+							winner = result;
+						}
 					}
-					
-					i
+					System.out.println("The winner is " +winner.getCountry()+ "with a final time of " +winner.getFinalTime()+ ".");
+				}
+
+
 					public static void delay()
 				    {
 				      try
